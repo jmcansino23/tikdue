@@ -248,18 +248,6 @@ img {
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
 }
 
-.pcard-1 {
-  margin-right: 18px;
-  transform: rotate(-1.5deg);
-}
-.pcard-2 {
-  margin-left: 18px;
-}
-.pcard-3 {
-  margin: 0 8px 0 4px;
-  transform: rotate(1deg);
-  opacity: 0.94;
-}
 
 .pcard-icon {
   width: 38px;
