@@ -193,15 +193,15 @@ img {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  background: var(--ground);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(165deg, var(--deep-2) 0%, var(--deep) 100%);
 }
 
 .hero {
   position: relative;
-  overflow: hidden;
-  background: linear-gradient(165deg, var(--deep-2) 0%, var(--deep) 100%);
   color: #fff;
-  padding: max(28px, env(safe-area-inset-top)) 24px 56px;
+  padding: max(28px, env(safe-area-inset-top)) 24px 20px;
   display: flex;
   flex-direction: column;
 }
@@ -276,16 +276,17 @@ img {
   color: var(--muted);
 }
 
+/* Same 24px side margins as the reminder cards, so the edges line up */
 .sheet {
   position: relative;
-  margin-top: -24px;
-  flex: 1;
+  margin: auto 24px max(24px, env(safe-area-inset-bottom));
   background: var(--ground);
-  border-radius: 28px 28px 0 0;
-  padding: 28px 24px max(24px, env(safe-area-inset-bottom));
+  border-radius: 20px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
 }
 
 .features {
