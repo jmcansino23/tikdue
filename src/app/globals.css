@@ -249,13 +249,15 @@ img {
 }
 
 .pcard-1 {
-  transform: translateX(-4px) rotate(-1.5deg);
+  margin-right: 18px;
+  transform: rotate(-1.5deg);
 }
 .pcard-2 {
-  transform: translateX(14px);
+  margin-left: 18px;
 }
 .pcard-3 {
-  transform: translateX(2px) rotate(1deg);
+  margin: 0 8px 0 4px;
+  transform: rotate(1deg);
   opacity: 0.94;
 }
 
