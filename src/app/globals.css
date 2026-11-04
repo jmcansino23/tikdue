@@ -309,6 +309,7 @@ img {
   font-size: 13px;
   font-weight: 600;
   text-align: center;
+  white-space: nowrap;
 }
 
 .feat-icon {

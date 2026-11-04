@@ -69,13 +69,13 @@ export default async function Welcome({
             <span className="feat-icon">
               <GlobeIcon />
             </span>
-            <span>Two countries</span>
+            <span>Two homes</span>
           </li>
           <li>
             <span className="feat-icon">
               <IdCardIcon />
             </span>
-            <span>Family papers</span>
+            <span>Family docs</span>
           </li>
           <li>
             <span className="feat-icon">
