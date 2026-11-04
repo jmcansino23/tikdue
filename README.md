@@ -20,26 +20,21 @@ who manage bills, card dues and documents across two countries.
 | `supabase/migrations/0001_init.sql` | Database tables with Row Level Security |
 | `wrangler.jsonc`, `open-next.config.ts` | Cloudflare settings |
 
-## Settings (environment variables)
+## Settings
 
-Both are public values from Supabase > Project Settings > API Keys:
+The public Supabase project URL and publishable key live in
+`src/lib/supabase/config.ts`. Both are safe in the browser: the publishable key
+only works together with Row Level Security. They can be overridden with the
+`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+environment variables.
 
-| Name | Value |
-| --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | `https://jwtdjgruigezzkbxwwjt.supabase.co` |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | the publishable key (`sb_publishable_…`) |
-
-Values starting with `NEXT_PUBLIC_` are built into the app, so in Cloudflare
-add them as **build variables** (Worker > Settings > Build > Variables and
-secrets), not only as runtime variables.
-
-Never put the Supabase **secret** / `service_role` key in this app.
+Never put the Supabase **secret** key in this app.
 
 ## Deploying
 
 1. Cloudflare dashboard > Workers & Pages > Create > Import a repository > `tikdue`.
 2. Build command: `npx opennextjs-cloudflare build`. Deploy command: `npx opennextjs-cloudflare deploy`.
-3. Add the two build variables above, then deploy.
+3. Deploy (no variables needed).
 4. Worker > Settings > Domains & Routes > add custom domain `tikdue.app`.
 
 Every push to `main` redeploys automatically.
