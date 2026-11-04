@@ -10,8 +10,11 @@ export default async function Home() {
 
   if (!user) redirect("/");
 
-  const name =
-    (user.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "there";
+  const titles = new Set(["dr", "mr", "mrs", "ms", "miss", "eng", "engr", "prof", "sir"]);
+  const words = ((user.user_metadata?.full_name as string | undefined) ?? "")
+    .split(/\s+/)
+    .filter(Boolean);
+  const name = words.find((w) => !titles.has(w.replace(/\./g, "").toLowerCase())) ?? "there";
 
   const today = new Date().toLocaleDateString("en-GB", {
     weekday: "long",
