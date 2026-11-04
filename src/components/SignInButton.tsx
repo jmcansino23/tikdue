@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { GoogleMark } from "@/components/Icons";
 
 export function SignInButton() {
   const [busy, setBusy] = useState(false);
@@ -17,7 +18,10 @@ export function SignInButton() {
   }
 
   return (
-    <button type="button" className="btn btn-primary" onClick={signIn} disabled={busy}>
+    <button type="button" className="btn btn-google" onClick={signIn} disabled={busy}>
+      <span className="g-badge">
+        <GoogleMark size={20} />
+      </span>
       {busy ? "Opening Google…" : "Continue with Google"}
     </button>
   );

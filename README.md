@@ -1,6 +1,6 @@
 # Tikdue
 
-Never miss a bill or expiry, here or back home. A reminder web app for expats
+Tick every due. A reminder web app for expats
 who manage bills, card dues and documents across two countries.
 
 - **App:** Next.js (App Router), installable as a phone app (PWA)

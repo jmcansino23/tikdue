@@ -1,4 +1,12 @@
 import { SignInButton } from "@/components/SignInButton";
+import {
+  CardIcon,
+  DocIcon,
+  GlobeIcon,
+  IdCardIcon,
+  PhoneIcon,
+  TapIcon,
+} from "@/components/Icons";
 
 export default async function Welcome({
   searchParams,
@@ -8,31 +16,79 @@ export default async function Welcome({
   const { error } = await searchParams;
 
   return (
-    <main className="shell">
-      <img className="logo" src="/icons/icon.svg" alt="" />
-      <div className="brand">Tikdue</div>
-      <h1>Never miss a bill or expiry, here or back home.</h1>
+    <main className="welcome">
+      <section className="hero">
+        <div className="hero-glow" aria-hidden="true" />
+        <div className="wordmark">
+          <img src="/icons/icon.svg" alt="" width={36} height={36} />
+          <span>Tikdue</span>
+        </div>
 
-      <ul className="benefits">
-        <li>
-          <strong>Bills in two countries</strong>
-          <span>Local bills, card dues and home-country payments in one list.</span>
-        </li>
-        <li>
-          <strong>Document expiries</strong>
-          <span>Visa, residence card, passport, car and insurance, for the whole family.</span>
-        </li>
-        <li>
-          <strong>One tap to mark paid</strong>
-          <span>Reminders before every due date, then it rolls to next month.</span>
-        </li>
-      </ul>
+        <h1 className="tagline">
+          Tick every <span className="tagline-accent">due.</span>
+        </h1>
+        <p className="hero-sub">Bills and document expiries, here and back home, in one calm list.</p>
 
-      <div className="spacer" />
+        <div className="preview" aria-label="Example reminders">
+          <div className="pcard pcard-1">
+            <span className="pcard-icon tone-red">
+              <CardIcon />
+            </span>
+            <span className="pcard-text">
+              <strong>Credit card</strong>
+              <small>OMR 120.000</small>
+            </span>
+            <span className="pill pill-red">2 days late</span>
+          </div>
+          <div className="pcard pcard-2">
+            <span className="pcard-icon tone-amber">
+              <PhoneIcon />
+            </span>
+            <span className="pcard-text">
+              <strong>Phone bill</strong>
+              <small>OMR 18.500</small>
+            </span>
+            <span className="pill pill-amber">In 2 days</span>
+          </div>
+          <div className="pcard pcard-3">
+            <span className="pcard-icon tone-teal">
+              <DocIcon />
+            </span>
+            <span className="pcard-text">
+              <strong>Residence card</strong>
+              <small>Expires 12 Dec</small>
+            </span>
+            <span className="pill pill-teal">38 days</span>
+          </div>
+        </div>
+      </section>
 
-      {error && <p className="error">Sign-in didn&apos;t finish. Please try again.</p>}
-      <SignInButton />
-      <p className="fine">No passwords. Free to use.</p>
+      <section className="sheet">
+        <ul className="features">
+          <li>
+            <span className="feat-icon">
+              <GlobeIcon />
+            </span>
+            <span>Two countries</span>
+          </li>
+          <li>
+            <span className="feat-icon">
+              <IdCardIcon />
+            </span>
+            <span>Family papers</span>
+          </li>
+          <li>
+            <span className="feat-icon">
+              <TapIcon />
+            </span>
+            <span>One-tap paid</span>
+          </li>
+        </ul>
+
+        {error && <p className="error">Sign-in didn&apos;t finish. Please try again.</p>}
+        <SignInButton />
+        <p className="fine">Free to use · No passwords</p>
+      </section>
     </main>
   );
 }

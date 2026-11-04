@@ -4,12 +4,12 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Tikdue",
     short_name: "Tikdue",
-    description: "Never miss a bill or expiry, here or back home.",
+    description: "Tick every due. Bills and document expiries, here and back home.",
     start_url: "/home",
     scope: "/",
     display: "standalone",
     background_color: "#F5F6F8",
-    theme_color: "#0F766E",
+    theme_color: "#063B37",
     icons: [
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
       { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
