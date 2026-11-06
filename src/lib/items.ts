@@ -54,31 +54,32 @@ export const REPEAT_MONTHS: Record<Repeat, number> = {
   once: 0,
 };
 
-export type Template = {
-  slug: string;
-  name: string;
-  category?: string;
-  country?: "host" | "home";
-  repeat?: Repeat;
-};
-
-export const BILL_TEMPLATES: Template[] = [
-  { slug: "phone", name: "Phone bill", category: "Phone & internet", repeat: "monthly" },
-  { slug: "card", name: "Credit card", category: "Credit card", repeat: "monthly" },
-  { slug: "utilities", name: "Electricity & water", category: "Utilities", repeat: "monthly" },
-  { slug: "internet", name: "Internet", category: "Phone & internet", repeat: "monthly" },
-  { slug: "rent", name: "Rent", category: "Rent", repeat: "monthly" },
-  { slug: "home", name: "Home-country contribution", category: "Contribution", country: "home", repeat: "monthly" },
+/** Bill types shown as buttons on the Add screen; each maps to a category. */
+export const BILL_TYPES: { name: string; category: string }[] = [
+  { name: "Phone bill", category: "Phone & internet" },
+  { name: "Credit card", category: "Credit card" },
+  { name: "Electricity & water", category: "Utilities" },
+  { name: "Internet", category: "Phone & internet" },
+  { name: "Rent", category: "Rent" },
+  { name: "Loan", category: "Loan" },
+  { name: "Insurance", category: "Insurance" },
+  { name: "School fees", category: "School fees" },
+  { name: "Subscription", category: "Subscription" },
+  { name: "Home-country contribution", category: "Contribution" },
 ];
 
-export const DOCUMENT_TEMPLATES: Template[] = [
-  { slug: "residence", name: "Residence card" },
-  { slug: "passport", name: "Passport" },
-  { slug: "visa", name: "Visa" },
-  { slug: "licence", name: "Driving licence" },
-  { slug: "car", name: "Car registration" },
-  { slug: "car-insurance", name: "Car insurance" },
+export const DOCUMENT_TYPES: string[] = [
+  "Residence card",
+  "Passport",
+  "Visa",
+  "Driving licence",
+  "Car registration",
+  "Car insurance",
+  "Health insurance",
+  "National ID",
 ];
+
+export const OTHER_TYPE = "__other";
 
 /** Normalise a row from Supabase (numeric columns can arrive as strings). */
 export function toItem(row: Record<string, unknown>): Item {

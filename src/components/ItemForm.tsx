@@ -1,7 +1,17 @@
 import { CURRENCIES } from "@/lib/money";
-import { BILL_CATEGORIES, REPEAT_LABELS, type Item, type Kind, type Repeat } from "@/lib/items";
+import {
+  BILL_TYPES,
+  DOCUMENT_TYPES,
+  OTHER_TYPE,
+  REPEAT_LABELS,
+  type Item,
+  type Kind,
+  type Repeat,
+} from "@/lib/items";
 
-type Defaults = Partial<Pick<Item, "name" | "category" | "country" | "amount" | "currency" | "repeat" | "next_due" | "belongs_to" | "notes">>;
+type Defaults = Partial<
+  Pick<Item, "name" | "country" | "amount" | "currency" | "repeat" | "next_due" | "belongs_to" | "notes">
+>;
 
 export function ItemForm({
   kind,
@@ -9,31 +19,50 @@ export function ItemForm({
   action,
   submitLabel,
   id,
-  minDate,
+  defaultCurrency = "OMR",
 }: {
   kind: Kind;
   defaults: Defaults;
   action: (formData: FormData) => Promise<void>;
   submitLabel: string;
   id?: string;
-  minDate?: string;
+  defaultCurrency?: string;
 }) {
   const isBill = kind === "bill";
+  const types = isBill ? BILL_TYPES.map((t) => t.name) : DOCUMENT_TYPES;
   const repeats = Object.keys(REPEAT_LABELS) as Repeat[];
+
+  // Pre-select the matching type when editing; anything else is "Other".
+  const selected = defaults.name ? (types.includes(defaults.name) ? defaults.name : OTHER_TYPE) : undefined;
 
   return (
     <form action={action} className="form">
       <input type="hidden" name="kind" value={kind} />
       {id && <input type="hidden" name="id" value={id} />}
 
-      <label className="field">
-        <span className="field-label">{isBill ? "Name" : "Document"}</span>
+      <fieldset className="field">
+        <legend className="field-label">{isBill ? "Bill type" : "Document type"}</legend>
+        <div className="type-chips">
+          {types.map((t) => (
+            <label key={t} className="type-chip">
+              <input type="radio" name="type" value={t} required defaultChecked={selected === t} />
+              <span>{t}</span>
+            </label>
+          ))}
+          <label className="type-chip">
+            <input type="radio" name="type" value={OTHER_TYPE} defaultChecked={selected === OTHER_TYPE} />
+            <span>Other</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <label className="field other-name">
+        <span className="field-label">Name</span>
         <input
           name="name"
-          required
           maxLength={80}
-          defaultValue={defaults.name ?? ""}
-          placeholder={isBill ? "e.g. Phone bill" : "e.g. Residence card"}
+          defaultValue={selected === OTHER_TYPE ? defaults.name ?? "" : ""}
+          placeholder={isBill ? "e.g. Gym membership" : "e.g. Work permit"}
           autoComplete="off"
         />
       </label>
@@ -77,7 +106,7 @@ export function ItemForm({
             </label>
             <label className="field field-narrow">
               <span className="field-label">Currency</span>
-              <select name="currency" defaultValue={defaults.currency ?? "OMR"}>
+              <select name="currency" defaultValue={defaults.currency ?? defaultCurrency}>
                 {CURRENCIES.map((c) => (
                   <option key={c} value={c}>
                     {c}
@@ -90,13 +119,7 @@ export function ItemForm({
           <div className="field-row">
             <label className="field">
               <span className="field-label">Next due date</span>
-              <input
-                type="date"
-                name="next_due"
-                required
-                defaultValue={defaults.next_due ?? ""}
-                min={minDate}
-              />
+              <input type="date" name="next_due" required defaultValue={defaults.next_due ?? ""} />
             </label>
             <label className="field">
               <span className="field-label">Repeats</span>
@@ -109,17 +132,6 @@ export function ItemForm({
               </select>
             </label>
           </div>
-
-          <label className="field">
-            <span className="field-label">Category</span>
-            <select name="category" defaultValue={defaults.category ?? "Other"}>
-              {BILL_CATEGORIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </label>
         </>
       ) : (
         <div className="field-row">
@@ -144,16 +156,18 @@ export function ItemForm({
         <span className="field-label">Notes (optional)</span>
         <textarea
           name="notes"
-          rows={2}
+          rows={1}
           maxLength={500}
           defaultValue={defaults.notes ?? ""}
-          placeholder={isBill ? "How you pay, who to call…" : "Where it's renewed, papers needed…"}
+          placeholder={isBill ? "How you pay, which card…" : "Where it's renewed, papers needed…"}
         />
       </label>
 
-      <button type="submit" className="btn-ink">
-        {submitLabel}
-      </button>
+      <div className="form-save">
+        <button type="submit" className="btn-ink">
+          {submitLabel}
+        </button>
+      </div>
     </form>
   );
 }

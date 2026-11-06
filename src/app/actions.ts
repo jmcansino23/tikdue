@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { addMonths, isValidISO } from "@/lib/dates";
 import { CURRENCIES } from "@/lib/money";
-import { BILL_CATEGORIES, ITEM_COLUMNS, REPEAT_MONTHS, toItem, type Repeat } from "@/lib/items";
+import { BILL_TYPES, DOCUMENT_TYPES, ITEM_COLUMNS, REPEAT_MONTHS, toItem, type Repeat } from "@/lib/items";
 
 function text(fd: FormData, key: string): string {
   const v = fd.get(key);
@@ -38,8 +38,12 @@ type ItemFields = {
 
 function readItem(fd: FormData): ItemFields | string {
   const kind = text(fd, "kind") === "document" ? "document" : "bill";
-  const name = text(fd, "name");
-  if (name.length < 1 || name.length > 80) return "Please give it a name (up to 80 characters).";
+  const type = text(fd, "type");
+  const known =
+    kind === "bill" ? BILL_TYPES.some((t) => t.name === type) : DOCUMENT_TYPES.includes(type);
+  if (!type) return kind === "bill" ? "Please choose a bill type." : "Please choose a document type.";
+  const name = known ? type : text(fd, "name");
+  if (name.length < 1 || name.length > 80) return "Please type a name for it (up to 80 characters).";
 
   const nextDue = text(fd, "next_due");
   if (!isValidISO(nextDue)) {
@@ -67,8 +71,7 @@ function readItem(fd: FormData): ItemFields | string {
     };
   }
 
-  const categoryRaw = text(fd, "category");
-  const category = BILL_CATEGORIES.includes(categoryRaw) ? categoryRaw : "Other";
+  const category = BILL_TYPES.find((t) => t.name === name)?.category ?? "Other";
   const country = text(fd, "country") === "home" ? "home" : "host";
 
   const repeatRaw = text(fd, "repeat") as Repeat;
@@ -184,4 +187,25 @@ export async function deleteItem(fd: FormData) {
   await supabase.from("items").delete().eq("id", id);
   revalidatePath("/home");
   redirect("/home");
+}
+
+/** Save the currency pair shown on the Home rate card. */
+export async function setCurrencies(fd: FormData) {
+  const list = CURRENCIES as readonly string[];
+  let base = text(fd, "base").toUpperCase();
+  let quote = text(fd, "quote").toUpperCase();
+  if (!list.includes(base) || !list.includes(quote)) return;
+  if (text(fd, "swap") === "1") [base, quote] = [quote, base];
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/");
+
+  await supabase
+    .from("profiles")
+    .upsert({ user_id: user.id, host_currency: base, home_currency: quote }, { onConflict: "user_id" });
+
+  revalidatePath("/home");
 }

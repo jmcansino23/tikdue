@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { setCurrencies } from "@/app/actions";
 import { AppBar } from "@/components/AppBar";
+import { RateCard } from "@/components/RateCard";
 import { ItemCard, statusTone } from "@/components/ItemCard";
 import { SignOutButton } from "@/components/SignOutButton";
 import { DEFAULT_TZ, daysBetween, formatToday, hourIn, todayIn } from "@/lib/dates";
 import { ITEM_COLUMNS, toItem, type Item } from "@/lib/items";
+import { CURRENCIES } from "@/lib/money";
+import { getRate } from "@/lib/rates";
 
 const TITLES = new Set(["dr", "mr", "mrs", "ms", "miss", "eng", "engr", "prof", "sir"]);
 
@@ -26,9 +30,16 @@ export default async function Home({
   } = await supabase.auth.getUser();
   if (!user) redirect("/");
 
-  const { data: profile } = await supabase.from("profiles").select("time_zone").maybeSingle();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("time_zone, host_currency, home_currency")
+    .maybeSingle();
   const tz = (profile?.time_zone as string | undefined) || DEFAULT_TZ;
   const today = todayIn(tz);
+
+  const base = (profile?.host_currency as string | undefined) || "OMR";
+  const quote = (profile?.home_currency as string | undefined) || (base === "USD" ? "OMR" : "USD");
+  const rate = await getRate(base, quote);
 
   const { data: rows } = await supabase
     .from("items")
@@ -92,6 +103,16 @@ export default async function Home({
             {name ? `, ${name}` : ""}.
           </h1>
         </section>
+
+        <RateCard
+          key={`${base}-${quote}`}
+          base={base}
+          quote={quote}
+          rate={rate?.rate ?? null}
+          updated={rate?.updated ?? null}
+          currencies={CURRENCIES}
+          action={setCurrencies}
+        />
 
         {all.length > 0 && (
           <section className="tally" aria-label="Summary">

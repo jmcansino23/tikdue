@@ -2,26 +2,25 @@ import Link from "next/link";
 import { createItem } from "@/app/actions";
 import { AppBar } from "@/components/AppBar";
 import { ItemForm } from "@/components/ItemForm";
-import { BILL_TEMPLATES, DOCUMENT_TEMPLATES, type Kind } from "@/lib/items";
+import { createClient } from "@/lib/supabase/server";
+import type { Kind } from "@/lib/items";
 
 export default async function AddItem({
   searchParams,
 }: {
-  searchParams: Promise<{ kind?: string; t?: string; error?: string }>;
+  searchParams: Promise<{ kind?: string; error?: string }>;
 }) {
-  const { kind: kindParam, t, error } = await searchParams;
+  const { kind: kindParam, error } = await searchParams;
   const kind: Kind = kindParam === "document" ? "document" : "bill";
-  const templates = kind === "bill" ? BILL_TEMPLATES : DOCUMENT_TEMPLATES;
-  const picked = templates.find((tpl) => tpl.slug === t);
+
+  const supabase = await createClient();
+  const { data: profile } = await supabase.from("profiles").select("host_currency").maybeSingle();
+  const defaultCurrency = (profile?.host_currency as string | undefined) || "OMR";
 
   return (
     <main className="page">
       <div className="page-inner">
-        <AppBar back="/home" title="Add" />
-
-        <h1 className="page-title">
-          Add a <em>{kind === "bill" ? "bill" : "document"}.</em>
-        </h1>
+        <AppBar back="/home" title={kind === "bill" ? "Add bill" : "Add document"} />
 
         <nav className="segment-links" aria-label="Type">
           <Link href="/add" aria-current={kind === "bill" ? "page" : undefined}>
@@ -32,35 +31,15 @@ export default async function AddItem({
           </Link>
         </nav>
 
-        <section className="templates" aria-label="Quick start">
-          <p className="eyebrow">Quick start</p>
-          <div className="chips chips-wrap">
-            {templates.map((tpl) => (
-              <Link
-                key={tpl.slug}
-                href={`/add?kind=${kind}&t=${tpl.slug}`}
-                className="chip"
-                aria-current={picked?.slug === tpl.slug ? "true" : undefined}
-              >
-                {tpl.name}
-              </Link>
-            ))}
-          </div>
-        </section>
-
         {error && <p className="notice notice-error">{error}</p>}
 
         <ItemForm
-          key={`${kind}-${picked?.slug ?? "blank"}`}
+          key={kind}
           kind={kind}
-          defaults={{
-            name: picked?.name,
-            category: picked?.category,
-            country: picked?.country,
-            repeat: picked?.repeat,
-          }}
+          defaults={{}}
           action={createItem}
           submitLabel={kind === "bill" ? "Save bill" : "Save document"}
+          defaultCurrency={defaultCurrency}
         />
       </div>
     </main>

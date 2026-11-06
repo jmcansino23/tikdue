@@ -23,10 +23,7 @@ export default async function EditItem({
   return (
     <main className="page">
       <div className="page-inner">
-        <AppBar back={`/items/${id}`} title="Edit" />
-        <h1 className="page-title">
-          Edit <em>{item.name}.</em>
-        </h1>
+        <AppBar back={`/items/${id}`} title={`Edit ${item.kind === "bill" ? "bill" : "document"}`} />
         {error && <p className="notice notice-error">{error}</p>}
         <ItemForm
           kind={item.kind}
