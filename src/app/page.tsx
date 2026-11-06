@@ -15,12 +15,13 @@ export default async function Welcome({
   return (
     <main className="lux">
       <div className="lux-inner">
-        <header className="lux-top">
-          <span className="lux-mark">Tikdue</span>
-          <span className="lux-tag">Bills · Documents</span>
-        </header>
-
         <section className="lux-center">
+          <div className="lux-brand">
+            <img src="/icons/icon.svg" alt="" width={72} height={72} />
+            <span className="lux-name">Tikdue</span>
+            <span className="lux-tag">Bills · Documents</span>
+          </div>
+
           <h1 className="lux-title">
             Tick every <em>due.</em>
           </h1>
