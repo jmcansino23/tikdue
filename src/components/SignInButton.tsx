@@ -18,7 +18,7 @@ export function SignInButton() {
   }
 
   return (
-    <button type="button" className="btn btn-google" onClick={signIn} disabled={busy}>
+    <button type="button" className="lux-btn" onClick={signIn} disabled={busy}>
       <span className="g-badge">
         <GoogleMark size={20} />
       </span>

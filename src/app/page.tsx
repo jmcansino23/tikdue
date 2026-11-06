@@ -1,12 +1,9 @@
+import type { Viewport } from "next";
 import { SignInButton } from "@/components/SignInButton";
-import {
-  CardIcon,
-  DocIcon,
-  GlobeIcon,
-  IdCardIcon,
-  PhoneIcon,
-  TapIcon,
-} from "@/components/Icons";
+
+export const viewport: Viewport = {
+  themeColor: "#F6F3EC",
+};
 
 export default async function Welcome({
   searchParams,
@@ -16,79 +13,58 @@ export default async function Welcome({
   const { error } = await searchParams;
 
   return (
-    <main className="welcome">
-      <section className="hero">
-        <div className="hero-glow" aria-hidden="true" />
-        <div className="wordmark">
-          <img src="/icons/icon.svg" alt="" width={36} height={36} />
-          <span>Tikdue</span>
-        </div>
+    <main className="lux">
+      <div className="lux-inner">
+        <header className="lux-top">
+          <span className="lux-mark">Tikdue</span>
+          <span className="lux-tag">Bills · Documents</span>
+        </header>
 
-        <h1 className="tagline">
-          Tick every <span className="tagline-accent">due.</span>
-        </h1>
-        <p className="hero-sub">Bills and document expiries, here and back home, in one calm list.</p>
+        <section className="lux-hero">
+          <p className="lux-eyebrow">For life in two homes</p>
+          <h1 className="lux-title">
+            Tick every <em>due.</em>
+          </h1>
+          <p className="lux-sub">
+            Bills, card dues and document expiries, here and back home. Quietly remembered.
+          </p>
+        </section>
 
-        <div className="preview" aria-label="Example reminders">
-          <div className="pcard pcard-1">
-            <span className="pcard-icon tone-red">
-              <CardIcon />
+        <ol className="ledger" aria-label="Example reminders">
+          <li className="ledger-row is-done">
+            <span className="ledger-name">Credit card</span>
+            <span className="ledger-leader" aria-hidden="true" />
+            <span className="ledger-date">2 Nov</span>
+            <span className="ledger-mark" aria-label="Paid">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path d="M4.5 12.5l4.75 4.75L19.5 7" />
+              </svg>
             </span>
-            <span className="pcard-text">
-              <strong>Credit card</strong>
-              <small>OMR 120.000</small>
-            </span>
-            <span className="pill pill-red">2 days late</span>
-          </div>
-          <div className="pcard pcard-2">
-            <span className="pcard-icon tone-amber">
-              <PhoneIcon />
-            </span>
-            <span className="pcard-text">
-              <strong>Phone bill</strong>
-              <small>OMR 18.500</small>
-            </span>
-            <span className="pill pill-amber">In 2 days</span>
-          </div>
-          <div className="pcard pcard-3">
-            <span className="pcard-icon tone-teal">
-              <DocIcon />
-            </span>
-            <span className="pcard-text">
-              <strong>Residence card</strong>
-              <small>Expires 12 Dec</small>
-            </span>
-            <span className="pill pill-teal">38 days</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="sheet">
-        <ul className="features">
-          <li>
-            <span className="feat-icon">
-              <GlobeIcon />
-            </span>
-            <span>Two homes</span>
           </li>
-          <li>
-            <span className="feat-icon">
-              <IdCardIcon />
+          <li className="ledger-row">
+            <span className="ledger-name">Phone bill</span>
+            <span className="ledger-leader" aria-hidden="true" />
+            <span className="ledger-date">6 Nov</span>
+            <span className="ledger-mark" aria-label="Upcoming">
+              <span className="ledger-dot" />
             </span>
-            <span>Family docs</span>
           </li>
-          <li>
-            <span className="feat-icon">
-              <TapIcon />
+          <li className="ledger-row">
+            <span className="ledger-name">Residence card</span>
+            <span className="ledger-leader" aria-hidden="true" />
+            <span className="ledger-date">12 Dec</span>
+            <span className="ledger-mark" aria-label="Upcoming">
+              <span className="ledger-dot" />
             </span>
-            <span>One-tap paid</span>
           </li>
-        </ul>
+        </ol>
 
-        {error && <p className="error">Sign-in didn&apos;t finish. Please try again.</p>}
-        <SignInButton />
-        <p className="fine">Free to use · No passwords</p>
-      </section>
+        <footer className="lux-cta">
+          {error && <p className="lux-error">Sign-in didn&apos;t finish. Please try again.</p>}
+          <SignInButton />
+          <p className="lux-fine">Free to use · No passwords</p>
+        </footer>
+      </div>
     </main>
   );
 }
