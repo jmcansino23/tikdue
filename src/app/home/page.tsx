@@ -5,7 +5,6 @@ import { AppBar } from "@/components/AppBar";
 import { ItemCard, statusTone } from "@/components/ItemCard";
 import { SignOutButton } from "@/components/SignOutButton";
 import { DEFAULT_TZ, daysBetween, formatToday, hourIn, todayIn } from "@/lib/dates";
-import { formatMoney } from "@/lib/money";
 import { ITEM_COLUMNS, toItem, type Item } from "@/lib/items";
 
 const TITLES = new Set(["dr", "mr", "mrs", "ms", "miss", "eng", "engr", "prof", "sir"]);
@@ -45,13 +44,20 @@ export default async function Home({
   const groups = { late: [] as Item[], soon: [] as Item[], later: [] as Item[] };
   for (const item of shown) groups[statusTone(daysBetween(today, item.next_due as string))].push(item);
 
-  // Bills still to pay this month (including anything overdue), per currency.
-  const monthEnd = `${today.slice(0, 7)}-31`;
-  const totals = new Map<string, number>();
+  // Summary: bills due within a week, documents expiring within 30 days.
+  let billsDue = 0;
+  let billsLate = 0;
+  let docsExpiring = 0;
+  let docsExpired = 0;
   for (const item of all) {
-    if (item.kind !== "bill" || item.amount === null || !item.currency) continue;
-    if ((item.next_due as string) > monthEnd) continue;
-    totals.set(item.currency, (totals.get(item.currency) ?? 0) + item.amount);
+    const d = daysBetween(today, item.next_due as string);
+    if (item.kind === "bill" && d <= 7) {
+      billsDue += 1;
+      if (d < 0) billsLate += 1;
+    } else if (item.kind === "document" && d <= 30) {
+      docsExpiring += 1;
+      if (d < 0) docsExpired += 1;
+    }
   }
 
   const hour = hourIn(tz);
@@ -66,7 +72,7 @@ export default async function Home({
   ];
 
   const sections: { key: keyof typeof groups; title: string }[] = [
-    { key: "late", title: "Overdue" },
+    { key: "late", title: "Needs attention" },
     { key: "soon", title: "This week" },
     { key: "later", title: "Coming up" },
   ];
@@ -89,28 +95,21 @@ export default async function Home({
 
         {all.length > 0 && (
           <section className="tally" aria-label="Summary">
-            <div className={groups.late.length ? "tally-late" : undefined}>
-              <span className="tally-num">{groups.late.length}</span>
-              <span className="tally-label">Overdue</span>
-            </div>
-            <div>
-              <span className="tally-num">{groups.soon.length}</span>
-              <span className="tally-label">This week</span>
-            </div>
-            <div>
-              <span className="tally-num">{groups.later.length}</span>
-              <span className="tally-label">Coming up</span>
-            </div>
+            <Link href="/home?f=bills" className={billsLate ? "tally-late" : undefined}>
+              <span className="tally-num">{billsDue}</span>
+              <span className="tally-label">Bills due</span>
+              <span className="tally-sub">
+                {billsLate ? `${billsLate} overdue` : "within 7 days"}
+              </span>
+            </Link>
+            <Link href="/home?f=documents" className={docsExpired ? "tally-late" : undefined}>
+              <span className="tally-num">{docsExpiring}</span>
+              <span className="tally-label">Documents expiring</span>
+              <span className="tally-sub">
+                {docsExpired ? `${docsExpired} expired` : "within 30 days"}
+              </span>
+            </Link>
           </section>
-        )}
-
-        {totals.size > 0 && (
-          <p className="to-pay">
-            <span className="eyebrow">To pay this month</span>
-            <span className="to-pay-amounts">
-              {[...totals.entries()].map(([cur, amt]) => formatMoney(amt, cur)).join("  ·  ")}
-            </span>
-          </p>
         )}
 
         {all.length === 0 ? (

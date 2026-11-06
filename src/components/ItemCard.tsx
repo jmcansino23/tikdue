@@ -17,8 +17,8 @@ export function ItemCard({ item, today, returnTo }: { item: Item; today: string;
   const isBill = item.kind === "bill";
 
   const meta = isBill
-    ? [item.amount !== null && item.currency ? formatMoney(item.amount, item.currency) : null, `Due ${formatShort(due)}`]
-    : [item.belongs_to && item.belongs_to !== "Me" ? item.belongs_to : null, `Expires ${formatShort(due)}`];
+    ? [item.amount !== null && item.currency ? formatMoney(item.amount, item.currency) : null, formatShort(due)]
+    : [item.belongs_to && item.belongs_to !== "Me" ? item.belongs_to : null, formatShort(due)];
 
   return (
     <li className={`card tone-${tone}`}>
@@ -28,7 +28,7 @@ export function ItemCard({ item, today, returnTo }: { item: Item; today: string;
           {isBill && item.country === "home" && <span className="card-flag">Home</span>}
         </span>
         <span className="card-meta">{meta.filter(Boolean).join(" · ")}</span>
-        <span className="card-when">{relativeLabel(days)}</span>
+        <span className="card-when">{relativeLabel(days, item.kind)}</span>
       </Link>
 
       {isBill ? (

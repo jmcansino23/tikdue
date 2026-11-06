@@ -92,11 +92,20 @@ export function formatToday(tz: string = DEFAULT_TZ): string {
   }
 }
 
-/** Friendly countdown: "2 days overdue", "Today", "Tomorrow", "In 5 days". */
-export function relativeLabel(days: number): string {
-  if (days < -1) return `${-days} days overdue`;
-  if (days === -1) return "1 day overdue";
-  if (days === 0) return "Today";
-  if (days === 1) return "Tomorrow";
-  return `In ${days} days`;
+/**
+ * Friendly countdown. Bills: "2 days overdue", "Due today", "Due tomorrow", "Due in 5 days".
+ * Documents: "Expired 2 days ago", "Expires today", "Expires tomorrow", "Expires in 5 days".
+ */
+export function relativeLabel(days: number, kind: "bill" | "document" = "bill"): string {
+  const plural = (n: number) => `${n} day${n === 1 ? "" : "s"}`;
+  if (kind === "document") {
+    if (days < 0) return `Expired ${plural(-days)} ago`;
+    if (days === 0) return "Expires today";
+    if (days === 1) return "Expires tomorrow";
+    return `Expires in ${plural(days)}`;
+  }
+  if (days < 0) return `${plural(-days)} overdue`;
+  if (days === 0) return "Due today";
+  if (days === 1) return "Due tomorrow";
+  return `Due in ${plural(days)}`;
 }

@@ -72,7 +72,7 @@ export default async function ItemDetails({
           {item.next_due ? (
             <p className="detail-due">
               {isBill ? "Next due" : "Expires"} {formatLong(item.next_due)}
-              <span className={`badge tone-${tone}`}>{relativeLabel(days as number)}</span>
+              <span className={`badge tone-${tone}`}>{relativeLabel(days as number, item.kind)}</span>
             </p>
           ) : (
             <p className="detail-due">Paid in full. Nothing more due.</p>
