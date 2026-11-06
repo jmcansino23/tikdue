@@ -32,8 +32,19 @@ export function ItemForm({
   const types = isBill ? BILL_TYPES.map((t) => t.name) : DOCUMENT_TYPES;
   const repeats = Object.keys(REPEAT_LABELS) as Repeat[];
 
-  // Pre-select the matching type when editing; anything else is "Other".
-  const selected = defaults.name ? (types.includes(defaults.name) ? defaults.name : OTHER_TYPE) : undefined;
+  // When editing, split "Credit card · Amex" back into its type and label.
+  // Names that don't start with a known type are "Other".
+  let selected: string | undefined;
+  let label = "";
+  if (defaults.name) {
+    const match = types.find((t) => defaults.name === t || defaults.name!.startsWith(`${t} · `));
+    if (match) {
+      selected = match;
+      label = defaults.name.slice(match.length + 3);
+    } else {
+      selected = OTHER_TYPE;
+    }
+  }
 
   return (
     <form action={action} className="form">
@@ -55,6 +66,17 @@ export function ItemForm({
           </label>
         </div>
       </fieldset>
+
+      <label className="field type-label">
+        <span className="field-label">Which one? (optional)</span>
+        <input
+          name="label"
+          maxLength={40}
+          defaultValue={label}
+          placeholder={isBill ? "e.g. Amex, Bank Muscat, car loan" : "e.g. Mine, wife's, Toyota"}
+          autoComplete="off"
+        />
+      </label>
 
       <label className="field other-name">
         <span className="field-label">Name</span>
@@ -134,22 +156,13 @@ export function ItemForm({
           </div>
         </>
       ) : (
-        <div className="field-row">
+        <>
+          <input type="hidden" name="belongs_to" value={defaults.belongs_to ?? "Me"} />
           <label className="field">
             <span className="field-label">Expiry date</span>
             <input type="date" name="next_due" required defaultValue={defaults.next_due ?? ""} />
           </label>
-          <label className="field">
-            <span className="field-label">Whose</span>
-            <input
-              name="belongs_to"
-              maxLength={40}
-              defaultValue={defaults.belongs_to ?? "Me"}
-              placeholder="Me, spouse, car…"
-              autoComplete="off"
-            />
-          </label>
-        </div>
+        </>
       )}
 
       <label className="field">

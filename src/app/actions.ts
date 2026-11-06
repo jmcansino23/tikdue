@@ -42,7 +42,9 @@ function readItem(fd: FormData): ItemFields | string {
   const known =
     kind === "bill" ? BILL_TYPES.some((t) => t.name === type) : DOCUMENT_TYPES.includes(type);
   if (!type) return kind === "bill" ? "Please choose a bill type." : "Please choose a document type.";
-  const name = known ? type : text(fd, "name");
+  // Known type + optional label ("Credit card · Amex"); "Other" uses the typed name.
+  const label = text(fd, "label").slice(0, 40);
+  const name = known ? (label ? `${type} · ${label}` : type) : text(fd, "name");
   if (name.length < 1 || name.length > 80) return "Please type a name for it (up to 80 characters).";
 
   const nextDue = text(fd, "next_due");
@@ -71,7 +73,7 @@ function readItem(fd: FormData): ItemFields | string {
     };
   }
 
-  const category = BILL_TYPES.find((t) => t.name === name)?.category ?? "Other";
+  const category = BILL_TYPES.find((t) => t.name === type)?.category ?? "Other";
   const country = text(fd, "country") === "home" ? "home" : "host";
 
   const repeatRaw = text(fd, "repeat") as Repeat;

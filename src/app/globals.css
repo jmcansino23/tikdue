@@ -895,12 +895,17 @@ a {
   outline-offset: 2px;
 }
 
+/* "Other" swaps the optional label for a full name box */
 .field.other-name {
   display: none;
 }
 
 .form:has(input[name="type"][value="__other"]:checked) .field.other-name {
   display: flex;
+}
+
+.form:has(input[name="type"][value="__other"]:checked) .field.type-label {
+  display: none;
 }
 
 .form-save {
