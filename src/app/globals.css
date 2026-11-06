@@ -895,11 +895,11 @@ a {
   outline-offset: 2px;
 }
 
-.other-name {
+.field.other-name {
   display: none;
 }
 
-.form:has(input[name="type"][value="__other"]:checked) .other-name {
+.form:has(input[name="type"][value="__other"]:checked) .field.other-name {
   display: flex;
 }
 

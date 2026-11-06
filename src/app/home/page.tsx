@@ -15,7 +15,10 @@ const TITLES = new Set(["dr", "mr", "mrs", "ms", "miss", "eng", "engr", "prof", 
 
 function firstName(full: string | undefined): string | null {
   const words = (full ?? "").split(/\s+/).filter(Boolean);
-  return words.find((w) => !TITLES.has(w.replace(/\./g, "").toLowerCase())) ?? null;
+  const first = words.find((w) => !TITLES.has(w.replace(/\./g, "").toLowerCase()));
+  // Skip initials like "J." — greet without a name rather than "Good evening, J."
+  if (!first || first.replace(/\./g, "").length < 2) return null;
+  return first;
 }
 
 export default async function Home({
@@ -118,16 +121,16 @@ export default async function Home({
           <section className="tally" aria-label="Summary">
             <Link href="/home?f=bills" className={billsLate ? "tally-late" : undefined}>
               <span className="tally-num">{billsDue}</span>
-              <span className="tally-label">Bills due</span>
+              <span className="tally-label">Bills</span>
               <span className="tally-sub">
-                {billsLate ? `${billsLate} overdue` : "within 7 days"}
+                {billsLate ? `${billsLate} overdue` : "due in 7 days"}
               </span>
             </Link>
             <Link href="/home?f=documents" className={docsExpired ? "tally-late" : undefined}>
               <span className="tally-num">{docsExpiring}</span>
-              <span className="tally-label">Documents expiring</span>
+              <span className="tally-label">Documents</span>
               <span className="tally-sub">
-                {docsExpired ? `${docsExpired} expired` : "within 30 days"}
+                {docsExpired ? `${docsExpired} expired` : "expiring in 30 days"}
               </span>
             </Link>
           </section>
