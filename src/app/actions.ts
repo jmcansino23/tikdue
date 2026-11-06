@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { addMonths, isValidISO } from "@/lib/dates";
 import { CURRENCIES } from "@/lib/money";
+import { isExpired, loadVapid, sendPush } from "@/lib/push";
+import { secret } from "@/lib/secrets";
 import { BILL_TYPES, DOCUMENT_TYPES, ITEM_COLUMNS, REPEAT_MONTHS, toItem, type Repeat } from "@/lib/items";
 
 function text(fd: FormData, key: string): string {
@@ -210,4 +212,71 @@ export async function setCurrencies(fd: FormData) {
     .upsert({ user_id: user.id, host_currency: base, home_currency: quote }, { onConflict: "user_id" });
 
   revalidatePath("/home");
+}
+
+/* ------------------------------------------------------------------ */
+/* Reminders                                                           */
+/* ------------------------------------------------------------------ */
+
+export async function savePushSubscription(sub: { endpoint: string; p256dh: string; auth: string }) {
+  const ok =
+    typeof sub?.endpoint === "string" &&
+    sub.endpoint.startsWith("https://") &&
+    sub.endpoint.length <= 1000 &&
+    typeof sub.p256dh === "string" &&
+    sub.p256dh.length <= 200 &&
+    typeof sub.auth === "string" &&
+    sub.auth.length <= 100;
+  if (!ok) return { ok: false };
+
+  const supabase = await createClient();
+  // Replace any earlier copy of this device's subscription.
+  await supabase.from("push_subscriptions").delete().eq("endpoint", sub.endpoint);
+  const { error } = await supabase
+    .from("push_subscriptions")
+    .insert({ endpoint: sub.endpoint, p256dh: sub.p256dh, auth: sub.auth });
+  return { ok: !error };
+}
+
+export async function removePushSubscription(endpoint: string) {
+  const supabase = await createClient();
+  await supabase.from("push_subscriptions").delete().eq("endpoint", endpoint);
+  return { ok: true };
+}
+
+/** Send a test notification to every device this person has turned reminders on for. */
+export async function sendTestPush() {
+  const vapid = await loadVapid(secret("VAPID_PRIVATE_JWK"));
+  if (!vapid) return { ok: false, message: "Reminders aren't fully set up yet (missing key)." };
+
+  const supabase = await createClient();
+  const { data } = await supabase.from("push_subscriptions").select("id, endpoint, p256dh, auth");
+  const subs = (data ?? []) as { id: string; endpoint: string; p256dh: string; auth: string }[];
+  if (subs.length === 0) return { ok: false, message: "Turn on reminders on this device first." };
+
+  let sent = 0;
+  for (const sub of subs) {
+    const status = await sendPush(
+      sub,
+      { title: "Tikdue", body: "Reminders are on. We'll keep watch over your dates.", url: "/home", tag: "tikdue-test" },
+      vapid,
+    );
+    if (status >= 200 && status < 300) sent += 1;
+    else if (isExpired(status)) await supabase.from("push_subscriptions").delete().eq("id", sub.id);
+  }
+  return sent > 0
+    ? { ok: true, message: `Sent to ${sent} device${sent === 1 ? "" : "s"}.` }
+    : { ok: false, message: "Couldn't deliver it. Try turning reminders off and on again." };
+}
+
+export async function setReminderTime(fd: FormData) {
+  const time = text(fd, "reminder_time");
+  if (!/^(0[6-9]|1\d|2[0-2]):00$/.test(time)) return;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/");
+  await supabase.from("profiles").update({ reminder_time: time }).eq("user_id", user.id);
+  revalidatePath("/settings");
 }

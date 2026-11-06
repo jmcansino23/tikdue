@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 type CookieToSet = { name: string; value: string; options?: CookieOptions };
 
-const PROTECTED = ["/home", "/add", "/items"];
+const PROTECTED = ["/home", "/add", "/items", "/settings", "/setup"];
 
 // Keeps the Supabase session fresh and protects signed-in pages.
 export async function middleware(request: NextRequest) {
@@ -53,6 +53,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|icons/|.*\\.(?:svg|png|jpg|jpeg|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|sw.js|icons/|.*\\.(?:svg|png|jpg|jpeg|webp)$).*)",
   ],
 };

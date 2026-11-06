@@ -1149,3 +1149,153 @@ a {
 .danger-actions > * {
   flex: 1;
 }
+
+/* Settings link in the top bar */
+.bar-icon {
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--ink-soft);
+}
+
+.bar-icon:hover {
+  color: var(--ink);
+}
+
+.bar-icon svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Reminders */
+.remind-banner {
+  margin-top: 8px;
+  padding: 12px 10px 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(156, 127, 79, 0.45);
+  border-radius: 16px;
+  background: var(--brass-soft);
+}
+
+.remind-banner div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.remind-banner strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.remind-banner span {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.remind-full {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.remind-status {
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  margin-top: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--hair-strong);
+}
+
+.dot-on {
+  border-color: #2f7d5b;
+  background: #2f7d5b;
+}
+
+.remind-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.remind-note {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+/* Settings */
+.settings-block {
+  margin-top: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--hair);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.settings-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.settings-row .btn-line {
+  height: 50px;
+}
+
+.settings-hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.settings-account {
+  margin: 0;
+  font-size: 15px;
+}
+
+.settings-block .link-quiet {
+  align-self: flex-start;
+}
+
+/* One-time key helper */
+.keymaker {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.keymaker-box {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--hair-strong);
+  border-radius: 14px;
+  background: var(--paper);
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  word-break: break-all;
+}

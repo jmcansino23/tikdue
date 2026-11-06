@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { setCurrencies } from "@/app/actions";
+import { removePushSubscription, savePushSubscription, setCurrencies } from "@/app/actions";
 import { AppBar } from "@/components/AppBar";
 import { RateCard } from "@/components/RateCard";
 import { ItemCard, statusTone } from "@/components/ItemCard";
-import { SignOutButton } from "@/components/SignOutButton";
+import { Reminders } from "@/components/Reminders";
 import { DEFAULT_TZ, daysBetween, todayIn } from "@/lib/dates";
 import { ITEM_COLUMNS, toItem, type Item } from "@/lib/items";
 import { CURRENCIES } from "@/lib/money";
+import { vapidPublicKey } from "@/lib/push";
 import { getRate } from "@/lib/rates";
+import { secret } from "@/lib/secrets";
 
 export default async function Home({
   searchParams,
@@ -81,9 +83,25 @@ export default async function Home({
   return (
     <main className="page">
       <div className="page-inner">
-        <AppBar right={<SignOutButton />} />
+        <AppBar
+          right={
+            <Link href="/settings" className="bar-icon" aria-label="Settings">
+              <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
+              </svg>
+            </Link>
+          }
+        />
 
         {error && <p className="notice notice-error">{error}</p>}
+
+        <Reminders
+          variant="banner"
+          vapidKey={vapidPublicKey(secret("VAPID_PRIVATE_JWK"))}
+          save={savePushSubscription}
+          remove={removePushSubscription}
+        />
 
         <h1 className="sr-only">Your dues</h1>
 
