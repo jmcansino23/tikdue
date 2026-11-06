@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { removePushSubscription, savePushSubscription, sendTestPush, setReminderTime } from "@/app/actions";
 import { AppBar } from "@/components/AppBar";
@@ -6,6 +7,7 @@ import { SignOutButton } from "@/components/SignOutButton";
 import { createClient } from "@/lib/supabase/server";
 import { vapidPublicKey } from "@/lib/push";
 import { secret } from "@/lib/secrets";
+import { SUPPORT_EMAIL } from "@/lib/site";
 
 const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 06:00 to 22:00
 
@@ -73,6 +75,16 @@ export default async function Settings() {
           <h2 className="eyebrow">Account</h2>
           <p className="settings-account">{user.email}</p>
           <SignOutButton />
+        </section>
+
+        <section className="settings-block settings-about">
+          <h2 className="eyebrow">About</h2>
+          <nav className="about-links">
+            <a href={`mailto:${SUPPORT_EMAIL}?subject=Tikdue%20feedback`}>Send feedback</a>
+            <Link href="/privacy">Privacy policy</Link>
+            <Link href="/terms">Terms of use</Link>
+          </nav>
+          <p className="settings-hint">Tikdue · Beta</p>
         </section>
       </div>
     </main>

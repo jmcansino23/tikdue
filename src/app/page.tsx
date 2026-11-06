@@ -1,5 +1,7 @@
 import type { Viewport } from "next";
+import Link from "next/link";
 import { SignInButton } from "@/components/SignInButton";
+import { SUPPORT_EMAIL } from "@/lib/site";
 
 export const viewport: Viewport = {
   themeColor: "#F6F3EC",
@@ -33,7 +35,16 @@ export default async function Welcome({
           </div>
         </section>
 
-        <footer className="lux-foot">Free to use · No passwords</footer>
+        <footer className="lux-foot">
+          <span>Free to use · No passwords</span>
+          <nav className="lux-links" aria-label="About Tikdue">
+            <Link href="/privacy">Privacy</Link>
+            <span aria-hidden="true">·</span>
+            <Link href="/terms">Terms</Link>
+            <span aria-hidden="true">·</span>
+            <a href={`mailto:${SUPPORT_EMAIL}`}>Contact</a>
+          </nav>
+        </footer>
       </div>
     </main>
   );
