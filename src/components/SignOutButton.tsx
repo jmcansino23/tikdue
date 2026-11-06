@@ -13,7 +13,7 @@ export function SignOutButton() {
   }
 
   return (
-    <button type="button" className="btn btn-ghost" onClick={signOut}>
+    <button type="button" className="link-quiet" onClick={signOut}>
       Sign out
     </button>
   );
