@@ -424,9 +424,9 @@ a {
 }
 
 .tally-num {
-  font-family: var(--serif);
-  font-size: 28px;
-  font-weight: 400;
+  font-family: var(--sans);
+  font-size: 24px;
+  font-weight: 300;
   line-height: 1;
 }
 
@@ -1422,4 +1422,12 @@ a {
 .about-mail span {
   font-size: 13px;
   color: var(--ink-soft);
+}
+
+/* Cormorant's default old-style figures make "1" look like a Roman "I"; use plain lining numbers. */
+body,
+input,
+select,
+button {
+  font-variant-numeric: lining-nums;
 }

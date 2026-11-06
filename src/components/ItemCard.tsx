@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { markPaid } from "@/app/actions";
-import { daysBetween, formatShort, relativeLabel } from "@/lib/dates";
+import { daysBetween, formatDue, relativeLabel } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import type { Item } from "@/lib/items";
 
@@ -17,8 +17,8 @@ export function ItemCard({ item, today, returnTo }: { item: Item; today: string;
   const isBill = item.kind === "bill";
 
   const meta = isBill
-    ? [item.amount !== null && item.currency ? formatMoney(item.amount, item.currency) : null, formatShort(due)]
-    : [item.belongs_to && item.belongs_to !== "Me" ? item.belongs_to : null, formatShort(due)];
+    ? [item.amount !== null && item.currency ? formatMoney(item.amount, item.currency) : null, formatDue(due, today)]
+    : [item.belongs_to && item.belongs_to !== "Me" ? item.belongs_to : null, formatDue(due, today)];
 
   return (
     <li className={`card tone-${tone}`}>

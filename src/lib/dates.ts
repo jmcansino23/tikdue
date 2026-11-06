@@ -74,6 +74,11 @@ export function formatShort(iso: string): string {
   return `${d} ${MONTHS[m - 1]}`;
 }
 
+/** "8 Nov" this year; "8 Nov 2027" when the date falls in another year. */
+export function formatDue(iso: string, today: string): string {
+  return iso.slice(0, 4) === today.slice(0, 4) ? formatShort(iso) : formatLong(iso);
+}
+
 export function formatLong(iso: string): string {
   const { y, m, d } = parts(iso);
   return `${d} ${MONTHS[m - 1]} ${y}`;
@@ -97,7 +102,16 @@ export function formatToday(tz: string = DEFAULT_TZ): string {
  * Documents: "Expired 2 days ago", "Expires today", "Expires tomorrow", "Expires in 5 days".
  */
 export function relativeLabel(days: number, kind: "bill" | "document" = "bill"): string {
-  const plural = (n: number) => `${n} day${n === 1 ? "" : "s"}`;
+  const unit = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  // Far-off dates read better in months and years than in hundreds of days.
+  const plural = (n: number) => {
+    if (n < 60) return unit(n, "day");
+    const months = Math.round(n / 30.44);
+    if (months < 12) return unit(months, "month");
+    const y = Math.floor(months / 12);
+    const m = months % 12;
+    return m ? `${unit(y, "year")} ${unit(m, "month")}` : unit(y, "year");
+  };
   if (kind === "document") {
     if (days < 0) return `Expired ${plural(-days)} ago`;
     if (days === 0) return "Expires today";
