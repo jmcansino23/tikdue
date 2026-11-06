@@ -1412,3 +1412,14 @@ a {
   margin-top: auto;
   padding-top: 40px;
 }
+
+.about-links .about-mail {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.about-mail span {
+  font-size: 13px;
+  color: var(--ink-soft);
+}

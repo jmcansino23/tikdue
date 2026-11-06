@@ -80,7 +80,10 @@ export default async function Settings() {
         <section className="settings-block settings-about">
           <h2 className="eyebrow">About</h2>
           <nav className="about-links">
-            <a href={`mailto:${SUPPORT_EMAIL}?subject=Tikdue%20feedback`}>Send feedback</a>
+            <a href={`mailto:${SUPPORT_EMAIL}?subject=Tikdue%20feedback`} className="about-mail">
+              Send feedback
+              <span>{SUPPORT_EMAIL}</span>
+            </a>
             <Link href="/privacy">Privacy policy</Link>
             <Link href="/terms">Terms of use</Link>
           </nav>
