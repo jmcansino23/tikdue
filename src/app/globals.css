@@ -449,7 +449,7 @@ a {
 
 /* Exchange rate card */
 .rate {
-  margin-top: 24px;
+  margin-top: 12px;
   padding: 14px 16px 12px;
   border: 1px solid var(--hair);
   border-radius: 18px;

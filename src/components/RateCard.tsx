@@ -19,6 +19,14 @@ function fmt(n: number, digits: number) {
   }).format(n);
 }
 
+/** Keep digits and a single decimal point; drop letters and anything else. */
+function cleanNumber(raw: string) {
+  const digits = raw.replace(/[^0-9.]/g, "");
+  const dot = digits.indexOf(".");
+  const clean = dot === -1 ? digits : digits.slice(0, dot + 1) + digits.slice(dot + 1).replace(/\./g, "");
+  return clean.slice(0, 12);
+}
+
 function fmtRate(n: number) {
   return new Intl.NumberFormat("en-US", { maximumSignificantDigits: 6 }).format(n);
 }
@@ -30,8 +38,8 @@ function fmtUpdated(iso: string) {
 export function RateCard({ base, quote, rate, updated, currencies, action }: Props) {
   const [amount, setAmount] = useState("100");
 
-  const value = Number(amount.replace(/,/g, ""));
-  const converted = rate !== null && Number.isFinite(value) ? value * rate : null;
+  const value = Number(amount);
+  const converted = rate !== null && amount !== "" && Number.isFinite(value) ? value * rate : null;
 
   const submitOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => e.currentTarget.form?.requestSubmit();
 
@@ -64,7 +72,14 @@ export function RateCard({ base, quote, rate, updated, currencies, action }: Pro
             <input
               inputMode="decimal"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => setAmount(cleanNumber(e.target.value))}
+              onKeyDown={(e) => {
+                // Enter only finishes typing; it never submits the form (which would swap).
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  e.currentTarget.blur();
+                }
+              }}
               aria-label={`Amount in ${base}`}
             />
             <select name="base" defaultValue={base} onChange={submitOnChange} aria-label="From currency">

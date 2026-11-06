@@ -115,7 +115,7 @@ export async function createItem(fd: FormData) {
   if (error) back(`/add?kind=${kind}`, "Couldn't save just now. Please try again.");
 
   revalidatePath("/home");
-  redirect(`/home?added=${encodeURIComponent(fields.name)}`);
+  redirect("/home");
 }
 
 export async function updateItem(fd: FormData) {

@@ -6,27 +6,17 @@ import { AppBar } from "@/components/AppBar";
 import { RateCard } from "@/components/RateCard";
 import { ItemCard, statusTone } from "@/components/ItemCard";
 import { SignOutButton } from "@/components/SignOutButton";
-import { DEFAULT_TZ, daysBetween, formatToday, hourIn, todayIn } from "@/lib/dates";
+import { DEFAULT_TZ, daysBetween, todayIn } from "@/lib/dates";
 import { ITEM_COLUMNS, toItem, type Item } from "@/lib/items";
 import { CURRENCIES } from "@/lib/money";
 import { getRate } from "@/lib/rates";
 
-const TITLES = new Set(["dr", "mr", "mrs", "ms", "miss", "eng", "engr", "prof", "sir"]);
-
-function firstName(full: string | undefined): string | null {
-  const words = (full ?? "").split(/\s+/).filter(Boolean);
-  const first = words.find((w) => !TITLES.has(w.replace(/\./g, "").toLowerCase()));
-  // Skip initials like "J." — greet without a name rather than "Good evening, J."
-  if (!first || first.replace(/\./g, "").length < 2) return null;
-  return first;
-}
-
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ f?: string; added?: string; error?: string }>;
+  searchParams: Promise<{ f?: string; error?: string }>;
 }) {
-  const { f, added, error } = await searchParams;
+  const { f, error } = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -74,9 +64,6 @@ export default async function Home({
     }
   }
 
-  const hour = hourIn(tz);
-  const hello = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  const name = firstName(user.user_metadata?.full_name as string | undefined);
   const returnTo = f ? `/home?f=${f}` : "/home";
 
   const chips = [
@@ -96,16 +83,9 @@ export default async function Home({
       <div className="page-inner">
         <AppBar right={<SignOutButton />} />
 
-        {added && <p className="notice">Added {added}.</p>}
         {error && <p className="notice notice-error">{error}</p>}
 
-        <section className="greet">
-          <p className="eyebrow">{formatToday(tz)}</p>
-          <h1 className="greet-title">
-            {hello}
-            {name ? `, ${name}` : ""}.
-          </h1>
-        </section>
+        <h1 className="sr-only">Your dues</h1>
 
         <RateCard
           key={`${base}-${quote}`}
