@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { removePushSubscription, savePushSubscription, setCurrencies } from "@/app/actions";
 import { AppBar } from "@/components/AppBar";
+import { InstallBanner } from "@/components/InstallBanner";
 import { RateCard } from "@/components/RateCard";
 import { ItemCard, statusTone } from "@/components/ItemCard";
 import { Reminders } from "@/components/Reminders";
@@ -96,6 +97,7 @@ export default async function Home({
 
         {error && <p className="notice notice-error">{error}</p>}
 
+        <InstallBanner />
         <Reminders
           variant="banner"
           vapidKey={vapidPublicKey(secret("VAPID_PRIVATE_JWK"))}

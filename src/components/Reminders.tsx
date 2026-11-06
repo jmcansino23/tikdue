@@ -110,22 +110,17 @@ export function Reminders({ vapidKey, save, remove, test, variant }: Props) {
   }
 
   if (variant === "banner") {
-    if (state !== "off" && state !== "install") return null;
+    // The Home Screen step has its own banner (InstallBanner); this one only offers reminders.
+    if (state !== "off") return null;
     return (
       <section className="remind-banner">
         <div>
           <strong>Get reminders</strong>
-          <span>
-            {state === "install"
-              ? "Add Tikdue to your Home Screen first (Share → Add to Home Screen)."
-              : "A gentle nudge before each due date."}
-          </span>
+          <span>A gentle nudge before each due date.</span>
         </div>
-        {state === "off" && (
-          <button type="button" className="card-action" onClick={turnOn} disabled={busy}>
-            {busy ? "…" : "Turn on"}
-          </button>
-        )}
+        <button type="button" className="card-action" onClick={turnOn} disabled={busy}>
+          {busy ? "…" : "Turn on"}
+        </button>
       </section>
     );
   }

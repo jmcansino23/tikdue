@@ -1431,3 +1431,90 @@ select,
 button {
   font-variant-numeric: lining-nums;
 }
+
+/* Add to Home Screen */
+.install-banner .install-later {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-decoration-color: var(--hair-strong);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.install-go {
+  flex: none;
+  background: var(--ink);
+  color: var(--ivory);
+  border-color: var(--ink);
+}
+
+.install-icon {
+  vertical-align: -3px;
+}
+
+.install-icon path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.install-sheet {
+  width: min(560px, 100%);
+  max-width: 100%;
+  margin: auto auto 0;
+  padding: 0;
+  border: 0;
+  border-radius: 24px 24px 0 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.install-sheet::backdrop {
+  background: rgba(22, 33, 31, 0.35);
+}
+
+.install-sheet-inner {
+  padding: 28px 24px max(24px, env(safe-area-inset-bottom));
+}
+
+.install-sheet h2 {
+  margin: 0 0 16px;
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 300;
+}
+
+.install-sheet h2 em {
+  font-style: italic;
+  color: var(--brass);
+}
+
+.install-sheet ol {
+  margin: 0 0 22px;
+  padding-left: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.install-sheet li {
+  margin-bottom: 10px;
+}
+
+.install-sheet strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.install-sheet .btn-ink {
+  width: 100%;
+}
